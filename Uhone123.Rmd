@@ -1,0 +1,152 @@
+---
+title: "Untitled"
+author: "Vusi Mabasa"
+date: "2023-01-17"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+# R program to illustrate
+# Mann Whitney U Test
+ 
+# Creating a small dataset
+# Creating a vector of red bulb and orange prices
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(rstatix)
+library(ggpubr)
+library(devtools)
+library(readxl)
+```
+
+######################################################################################################################################################################################3#################
+
+```{r}
+library(readxl)
+DEMOGRAPHICS <- read_excel("C:/Users/VUSI/Downloads/DEMOGRAPHICS.xlsx", 
+    range = "D1:K49")
+View(DEMOGRAPHICS)
+```
+
+```{r}
+
+DEMOGRAPHICS%>% select(`Age range (months)`, `Age in months`, Sex, Ethnicity, `Diarrheic/non diarrheic`, `Mode of birth`, `Feeding type`) %>%
+  tbl_summary(by= `Diarrheic/non diarrheic`, statistic = list(all_continuous()~ "{mean}({sd})"))%>% bold_labels() %>% add_p() %>% add_overall()%>% bold_p(t=0.05, q=F)
+```
+
+
+```{r}
+#DEMOGRAPHICS $`Age range (months)` <- factor(DEMOGRAPHICS $`Age range (months)`, levels=DEMOGRAPHICS $`Age range (months)`)
+```
+
+```{r}
+pb0<- ggboxplot(DEMOGRAPHICS, x="Age range (months)", y="ct value" , fill ="Age range (months)",  add= "jitter", color = "black" , add.params = list(color="darkred")) + stat_compare_means()+
+  theme(legend.position="bottom")+theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
+  ggtitle("")+ylab("Ct value")+xlab("Age range") + theme(text=element_text(size=13,  family="serif")) #+theme_dark() 
+pb0
+```
+
+
+
+
+
+```{r}
+library(readxl)
+DEMOGRAPHICS <- read_excel("C:/Users/VUSI/Downloads/DEMOGRAPHICS.xlsx", 
+    range = "A55:B63")
+View(DEMOGRAPHICS)
+```
+
+```{r}
+pb1<- ggboxplot(DEMOGRAPHICS, x="Diarrheic/non diarrheic", y="ct value" , fill ="Diarrheic/non diarrheic",  add= "jitter", color = "black" , add.params = list(color="darkred")) + stat_compare_means()+theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+theme(legend.position="none")+
+  ggtitle("")+ylab("Ct value")+xlab("<1 month") + theme(text=element_text(size=13,  family="serif"))
+pb1
+```
+
+```{r}
+library(readxl)
+DEMOGRAPHICS <- read_excel("C:/Users/VUSI/Downloads/DEMOGRAPHICS.xlsx", 
+    range = "D55:E68")
+View(DEMOGRAPHICS)
+```
+
+```{r}
+pb2<- ggboxplot(DEMOGRAPHICS, x="Diarrheic/non diarrheic", y="ct value" , fill ="Diarrheic/non diarrheic",  add= "jitter", color = "black" , add.params = list(color="darkred")) + stat_compare_means()+
+  theme(legend.position="none")+theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
+  ggtitle("")+ylab("Ct value")+xlab("2-3 months") + theme(text=element_text(size=13,  family="serif"))#+theme_dark() 
+pb2
+```
+
+```{r}
+library(readxl)
+DEMOGRAPHICS <- read_excel("C:/Users/VUSI/Downloads/DEMOGRAPHICS.xlsx", 
+    range = "G55:H60")
+View(DEMOGRAPHICS)
+```
+
+```{r}
+pb3<- ggboxplot(DEMOGRAPHICS, x="Diarrheic/non diarrheic", y="ct value" , fill ="Diarrheic/non diarrheic",  add= "jitter", color = "black" , add.params = list(color="darkred")) + stat_compare_means()+
+  theme(legend.position="right")+theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
+  ggtitle("")+ylab("Ct value")+xlab("4-5 months") + theme(text=element_text(size=13,  family="serif"))#+theme_dark() 
+pb3
+```
+
+```{r}
+library(readxl)
+DEMOGRAPHICS <- read_excel("C:/Users/VUSI/Downloads/DEMOGRAPHICS.xlsx", 
+    range = "J55:K64")
+View(DEMOGRAPHICS)
+```
+
+```{r}
+pb4<- ggboxplot(DEMOGRAPHICS, x="Diarrheic/non diarrheic", y="ct value" , fill ="Diarrheic/non diarrheic",  add= "jitter", color = "black" , add.params = list(color="darkred")) + stat_compare_means() +theme(legend.position="none")+theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
+  ggtitle("")+ylab("Ct value")+xlab("6-7 months") + theme(text=element_text(size=13,  family="serif"))#+theme_dark() 
+pb4
+```
+
+```{r}
+library(readxl)
+DEMOGRAPHICS <- read_excel("C:/Users/VUSI/Downloads/DEMOGRAPHICS.xlsx", 
+    range = "M55:N62")
+View(DEMOGRAPHICS)
+```
+
+```{r}
+pb5<- ggboxplot(DEMOGRAPHICS, x="Diarrheic/non diarrheic", y="ct value" , fill ="Diarrheic/non diarrheic",  add= "jitter", color = "black" , add.params = list(color="darkred")) + stat_compare_means()+
+  theme(legend.position="none")+theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
+  ggtitle("")+ylab("Ct value")+xlab("8-9 months") + theme(text=element_text(size=13,  family="serif"))#+theme_dark() 
+pb5
+```
+
+```{r}
+library(readxl)
+DEMOGRAPHICS <- read_excel("C:/Users/VUSI/Downloads/DEMOGRAPHICS.xlsx", 
+    range = "P55:Q59")
+View(DEMOGRAPHICS)
+```
+
+```{r}
+pb6<- ggboxplot(DEMOGRAPHICS, x="Diarrheic/non diarrheic", y="ct value" , fill ="Diarrheic/non diarrheic",  add= "jitter", color = "black" , add.params = list(color="darkred")) + stat_compare_means()+
+  theme(legend.position="right")+theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
+  ggtitle("")+ylab("Ct value")+xlab("10-12 months") + theme(text=element_text(size=13,  family="serif"))#+theme_dark() 
+pb6
+```
+
+
+```{r}
+pb1|pb2|pb3
+ 
+```
+
+```{r}
+ pb4|pb5|pb6
+```
+
+
+
+
+

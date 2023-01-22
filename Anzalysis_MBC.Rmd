@@ -1,0 +1,59 @@
+---
+title: "Anzalysis_MBC"
+author: "Vusi Mabasa"
+date: "2022-11-13"
+output:
+  word_document: default
+  html_document: default
+---
+```{r}
+library(tidyverse)
+library(patchwork)
+library(rstatix)
+library(ggpubr)
+library(devtools)
+```
+
+```{r}
+library(extrafont)
+font_import()
+loadfonts(device="win")
+windowsFonts()
+```
+
+
+###################Titanium MIB analyses####################
+
+```{r}
+library(readxl)
+Anzalysis <- read_excel("C:/Users/VUSI/Downloads/Anzalysis.xlsx")
+```
+
+
+```{r}
+pb1<- ggerrorplot(Anzalysis, x="Nanomaterial2_TiO", y="K_TiO", fill = "Nanomaterial2_TiO",add="jitter", color="black", add.params = list(color="darkblue")) + stat_compare_means(label = "p.format")+theme(legend.position = "none") + theme(axis.text.x = element_text(angle = 45))+ ggtitle("")+ylab("MBC (CFU/mL)")+xlab("Titanium dioxide") +ylim(0,100)+ theme(text=element_text(size=16,  family="serif"))
+                
+pb1
+```
+
+```{r}
+pb2<- ggerrorplot(Anzalysis, x="Nanomaterial2_Ag", y="N_Ag", fill = "Nanomaterial2_Ag",add="jitter", color="black", add.params = list(color="darkred")) + stat_compare_means(label = "p.format")+theme(legend.position = "none") + theme(axis.text.x = element_text(angle = 45))+ ggtitle("")+ylab("MBC (CFU/mL)")+xlab("Silver")+ylim(0,100) + theme(text=element_text(size=16,  family="serif"))
+                
+pb2
+```
+```{r}
+pb3<- ggerrorplot(Anzalysis, x="Nanomaterial2_FeO", y="Q_FeO", fill = "Nanomaterial2_FeO", add="jitter", color="black", add.params = list(color="darkgreen")) + stat_compare_means(label = "p.format")+theme(legend.position = "none") + theme(axis.text.x = element_text(angle = 45))+ ggtitle("")+ylab("MBC (CFU/mL)")+xlab("Ferric oxide")+ylim(0,100) + theme(text=element_text(size=16,  family="serif"))
+                
+pb3
+```
+
+
+```{r}
+pb1|pb2 |pb3 
+```
+
+
+
+
+
+

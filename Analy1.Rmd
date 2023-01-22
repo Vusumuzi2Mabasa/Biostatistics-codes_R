@@ -1,0 +1,31 @@
+---
+title: "Uhone"
+author: "Vusi Mabasa"
+date: "2022-11-15"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(rstatix)
+library(ggpubr)
+library(devtools)
+library(readxl)
+```
+
+```{r}
+library(readxl)
+Ndihone <- read_excel("C:/Users/VUSI/Downloads/Ndihone.xlsx")
+View(Ndihone)
+
+```
+
+
+```{r}
+pb1<- ggboxplot (Ndihone, x="Sample_group", y="Status", fill = "Sample_group") + stat_compare_means( label = "p.format")+
+  theme(legend.position="bottom")+theme(axis.text.x = element_text(angle = 90))+
+  ggtitle("Synthetic soil")+ylab("OD")+xlab("") #+theme_dark()
+
+pb1
+```

@@ -1,0 +1,222 @@
+---
+title: "Untitled"
+author: "Vusi Mabasa"
+date: "2022-11-24"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+library(tidyverse)
+library(gtsummary)
+library(caret)
+```
+
+###############################################SILVER########################################SILVER#########################################################################SILVER#################################################SILVER#######################################SILVER#########################################################################SILVER##################################################################################################################
+
+```{r}
+library(readxl)
+Anzalysis_water <- read_excel("C:/Users/VUSI/Downloads/Anzalysis_water.xlsx", 
+    range = "a2:e38")
+```
+
+```{r}
+ModelA <- Anzalysis_water %>% select(Class, Nanomaterials, OD)
+ModelA$Class <-as.factor(ModelA$Class)
+```
+
+
+```{r}
+vus1 <- glm(Class ~ ., data = ModelA, family = binomial())
+summary(vus1)
+#vus1 %>% tbl_regression(exponentiate=T) %>% bold_p() %>% bold_labels() %>% add_significance_stars(hide_se = F, hide_p = F)
+```
+
+```{r}
+
+set.seed(100)
+
+TrainingIndex <- createDataPartition(ModelA[['Class']], p=0.8, list = FALSE)
+Trainingset <- ModelA[TrainingIndex,]
+Testingset <- ModelA[-TrainingIndex,]
+```
+
+```{r}
+
+model <-train(Class ~.,data = Trainingset, method = "svmPoly",
+              preProcess=c("scale", "center"), trControl= trainControl(method = "none"),
+              tuneGrid= data.frame(degree=1 , scale=1, C=1))
+
+```
+
+```{r}
+model.cv <- train(Class ~., data = Trainingset, method ="svmPoly",
+                  preProcess = c("scale", "center"), trControl= trainControl(method = "cv",number = 10),
+                  tuneGrid= data.frame(degree=1, scale=1, C=1))
+```
+
+#Apply mode for prediction
+```{r}
+model.training <- predict(model, Trainingset)
+model.testing <- predict(model, Testingset)
+model.cv <- predict(model.cv, Trainingset)
+```
+
+#model performance (display confusion matrix and statistics)
+```{r}
+model.training.confusion <- confusionMatrix(model.training, Trainingset[['Class']])
+model.testing.confusion <- confusionMatrix(model.testing, Testingset[['Class']])
+model.cv.confusion <- confusionMatrix(model.cv, Trainingset[['Class']])
+```
+
+
+# Print models
+```{r}
+print(model.training.confusion)
+print(model.testing.confusion)
+print(model.cv.confusion)
+```
+
+
+
+
+##FERIC-OXIDE##################################################FERIC-OXIDE####################FERIC-OXIDE#########################################################################
+##FERIC-OXIDE###################################FERIC-OXIDE################################FERIC-OXIDE############################################################################
+#######FERIC-OXIDE###################################################FERIC-OXIDE#######################################################################################
+
+
+```{r}
+library(readxl)
+Anzalysis_water <- read_excel("C:/Users/VUSI/Downloads/Anzalysis_water.xlsx", 
+    range = "g2:k38")
+```
+
+```{r}
+ModelB <- Anzalysis_water %>% select(Class, OD, Nanomaterials)
+ModelB$Class <-as.factor(ModelB$Class)
+```
+
+```{r}
+ModelB <- data.frame(as.list(ModelB))
+ModelB
+```
+```{r}
+vus1 <- glm(Class ~ ., data = ModelB, family = binomial())
+summary(vus1)
+#vus1 %>% tbl_regression(exponentiate=T) %>% bold_p() %>% bold_labels() %>% add_significance_stars(hide_se = F, hide_p = F)
+```
+
+```{r}
+
+set.seed(100)
+
+TrainingIndex <- createDataPartition(ModelB[['Class']], p=0.8, list = FALSE)
+Trainingset <- ModelB[TrainingIndex,]
+Testingset <- ModelB[-TrainingIndex,]
+```
+
+```{r}
+
+model <-train(Class ~.,data = Trainingset, method = "svmPoly",
+              preProcess=c("scale", "center"), trControl= trainControl(method = "none"),
+              tuneGrid= data.frame(degree=1 , scale=1, C=1))
+
+```
+
+```{r}
+model.cv <- train(Class ~., data = Trainingset, method ="svmPoly",
+                  preProcess = c("scale", "center"), trControl= trainControl(method = "cv",number = 10),
+                  tuneGrid= data.frame(degree=1, scale=1, C=1))
+```
+
+#Apply mode for prediction
+```{r}
+model.training <- predict(model, Trainingset)
+model.testing <- predict(model, Testingset)
+model.cv <- predict(model.cv, Trainingset)
+```
+
+#model performance (display confusion matrix and statistics)
+```{r}
+model.training.confusion <- confusionMatrix(model.training, Trainingset[['Class']])
+model.testing.confusion <- confusionMatrix(model.testing, Testingset[['Class']])
+model.cv.confusion <- confusionMatrix(model.cv, Trainingset[['Class']])
+```
+
+
+# Print models
+```{r}
+print(model.training.confusion)
+print(model.testing.confusion)
+print(model.cv.confusion)
+```
+
+
+##############################################TITANIUM##############################TITANIUM#####################################################################
+#################################################################################################################################################
+################################TITANIUM################################TITANIUM#################################################################################
+
+```{r}
+library(readxl)
+Anzalysis_water <- read_excel("C:/Users/VUSI/Downloads/Anzalysis_water.xlsx", 
+    range = "m2:q38")
+```
+
+```{r}
+ModelC <- Anzalysis_water %>% select(Class, Nanomaterials)
+ModelC$Class <-as.factor(ModelC$Class)
+```
+
+
+```{r}
+vus1 <- glm(Class ~ ., data = ModelC, family = binomial())
+summary(vus1)
+#vus1 %>% tbl_regression(exponentiate=T) %>% bold_p() %>% bold_labels() %>% add_significance_stars(hide_se = F, hide_p = F)
+```
+
+
+```{r}
+
+set.seed(100)
+
+TrainingIndex <- createDataPartition(ModelC[['Class']], p=0.8, list = FALSE)
+Trainingset <- ModelC[TrainingIndex,]
+Testingset <- ModelC[-TrainingIndex,]
+```
+
+```{r}
+
+model <-train(Class ~.,data = Trainingset, method = "svmPoly",
+              preProcess=c("scale", "center"), trControl= trainControl(method = "none"),
+              tuneGrid= data.frame(degree=1 , scale=1, C=1))
+
+```
+
+```{r}
+model.cv <- train(Class ~., data = Trainingset, method ="svmPoly",
+                  preProcess = c("scale", "center"), trControl= trainControl(method = "cv",number = 10),
+                  tuneGrid= data.frame(degree=1, scale=1, C=1))
+```
+
+#Apply mode for prediction
+```{r}
+model.training <- predict(model, Trainingset)
+model.testing <- predict(model, Testingset)
+model.cv <- predict(model.cv, Trainingset)
+```
+
+#model performance (display confusion matrix and statistics)
+```{r}
+model.training.confusion <- confusionMatrix(model.training, Trainingset[['Class']])
+model.testing.confusion <- confusionMatrix(model.testing, Testingset[['Class']])
+model.cv.confusion <- confusionMatrix(model.cv, Trainingset[['Class']])
+```
+
+
+# Print models
+```{r}
+print(model.training.confusion)
+print(model.testing.confusion)
+print(model.cv.confusion)
+```

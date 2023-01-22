@@ -1,0 +1,47 @@
+---
+title: "Anzalysis_Inhibition Zone"
+author: "Vusi Mabasa"
+date: "2022-11-13"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(rstatix)
+library(ggpubr)
+library(devtools)
+library(readxl)
+```
+
+```{r}
+Anzalysis <- read_excel("C:/Users/VUSI/Downloads/Anzalysis.xlsx")
+view(Anzalysis)
+```
+```{r}
+pb1<- ggerrorplot(Anzalysis, x="Nanomaterial3_TiO", y="T_TiO", fill = "Nanomaterial3_TiO",  add = "jitter", color="black", add.params = list(color="darkblue")) + ylim(0,35) + stat_compare_means(label = "p.format")+theme(legend.position = "none") + theme(axis.text.x = element_text(angle = 45))+ ggtitle("")+ylab("Zone of inhibition (mm)")+xlab("Titanium dioxide") +  theme(axis.title.x = element_text(colour="Black",size=12), axis.title.y = element_text(colour="Black",size=12)) + theme(text=element_text(size=13,  family="serif"))
+                
+pb1
+
+```
+
+```{r}
+pb2 <- ggerrorplot(Anzalysis, x="Nanomaterial3_Ag", y="W_Ag", fill = "Nanomaterial3_Ag",  add = "jitter", color="black",add.params = list(color="darkred") ) + ylim(0,35) + stat_compare_means(label = "p.format")+theme(legend.position = "none") + theme(axis.text.x = element_text(angle = 45))+ ggtitle("")+ylab("Zone of inhibition (mm)")+xlab("Silver") +  theme(axis.title.x = element_text(colour="Black",size=12), axis.title.y = element_text(colour="Black",size=12)) + theme(text=element_text(size=13,  family="serif"))
+                
+pb2 + ylim(0,40)
+```
+```{r}
+pb3<- ggerrorplot(Anzalysis, x="Nanomaterial3_FeO", y="Z_FeO", fill = "Nanomaterial3_FeO",  add = "jitter", color="black", add.params = list(color="darkgreen")) + ylim(0,35)+ stat_compare_means(label = "p.format")+theme(legend.position = "none")+theme(axis.text.x = element_text(angle = 45))  +ylab("Zone of inhibition (mm)")+xlab("Ferric Oxide")+
+ theme(axis.title.x = element_text(colour="Black",size=12), axis.title.y = element_text(colour="Black",size=12), axis.text.x = element_text(colour="black"))+ theme(text=element_text(size=13,  family="serif"))
+               
+pb3 
+```
+
+```{r}
+pb1|pb2 |pb3 
+```
+
+
+
+
+

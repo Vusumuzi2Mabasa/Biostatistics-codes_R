@@ -1,0 +1,56 @@
+---
+title: "Comparing extraction method"
+author: "Vusi Mabasa"
+date: "2023-01-16"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(rstatix)
+library(ggpubr)
+library(devtools)
+library(readxl)
+```
+
+```{r}
+library(readxl)
+Muthanyi_NanoDrop_results <- read_excel("C:/Users/VUSI/Downloads/Muthanyi NanoDrop results.xlsx", 
+    col_types = c("numeric", "text", "numeric", 
+        "numeric", "text"))
+View(Muthanyi_NanoDrop_results)
+```
+
+
+
+```{r}
+pb1<- ggboxplot(Muthanyi_NanoDrop_results, x="Extraction method", y="Concentration" , fill ="Extraction method",  add= "jitter", color = "black" , add.params = list(color="darkred")) +
+  theme(legend.position="bottom")+theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
+  ggtitle("DNA concentration")+ylab("Concentration")+xlab("") + theme(text=element_text(size=13,  family="serif"))#+theme_dark() #label = "p.format"
+pb1
+```
+
+```{r}
+Muthanyi_NanoDrop_results %>% select(`A260/A280`, `Extraction method`)
+```
+
+```{r}
+pb2 <- ggboxplot(Muthanyi_NanoDrop_results, x="Extraction method", y="`A260/A280`", fill ="Extraction method",  add= "jitter", color = "black" , add.params = list(color="darkred")) + theme(legend.position="bottom")+theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+ ggtitle("DNA purity")+ylab("A260/A280")+xlab("") + theme(text=element_text(size=13,  family="serif"))#+theme_dark() #label = "p.format"
+
+pb2
+```
+
+
+```{r}
+library(gtsummary)
+```
+
+```{r}
+Muthanyi_NanoDrop_results %>% select(`Extraction method`, `A260/A280`, Concentration) %>%
+  tbl_summary(by= `Extraction method`, statistic = list(all_continuous()~ "{mean}({sd})"))%>% bold_labels() %>% add_p() %>% add_overall()%>% bold_p(t=0.05, q=F)
+```
+

@@ -1,0 +1,264 @@
+---
+title: "Uhone"
+author: "Vusi Mabasa"
+date: "2022-11-17"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r}
+library(tidyverse)
+library(patchwork)
+```
+
+```{r}
+library(readxl)
+Data_Analysis_Moswane_Benjamin <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis Moswane Benjamin.xlsx", range = "l50:n62")
+view(Data_Analysis_Moswane_Benjamin)
+```
+
+```{r}
+Data_Analysis_Moswane_Benjamin$Age <- factor(Data_Analysis_Moswane_Benjamin$Age, levels=unique(Data_Analysis_Moswane_Benjamin$Age))
+```
+
+
+
+```{r}
+p1 <- ggplot(Data_Analysis_Moswane_Benjamin, aes(Age, Log, fill = Diarrhoea))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Abundance of B. longum in IDD and IDNDD")+theme(legend.position = "bottom") + ylab("Prevalence (%)") + xlab("Age (months)")
+
+p1
+```
+
+
+
+
+```{r}
+library(readxl)
+Data_Analysis_B_Thermophilus <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis B Thermophilus.xlsx", range="l50:n62")
+View(Data_Analysis_B_Thermophilus)
+```
+
+```{r}
+Data_Analysis_B_Thermophilus $Age <- factor(Data_Analysis_B_Thermophilus$Age, levels=unique(Data_Analysis_B_Thermophilus$Age))
+```
+
+
+```{r}
+p1 <- ggplot(Data_Analysis_B_Thermophilus, aes(Age, Log, fill = Diarrhoea))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Abundance of B. thermophilus in IDD and IDNDD")+theme(legend.position = "bottom") + ylab("Prevalence (%)") + xlab("Age (months)")
+p1
+```
+
+
+
+#########################################################################################################
+
+```{r}
+
+Data_Analysis_Moswane_Benjamin <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis Moswane Benjamin.xlsx", range = "a15:c27")
+View(Data_Analysis_Moswane_Benjamin)
+
+```
+
+
+```{r}
+Data_Analysis_Moswane_Benjamin$Age <- factor(Data_Analysis_Moswane_Benjamin$Age, levels=unique(Data_Analysis_Moswane_Benjamin$Age))
+
+```
+
+```{r}
+p1 <- ggplot(Data_Analysis_Moswane_Benjamin, aes(Age, Percentage, fill = Diarrhoea))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Prevalence of B. longum in IDD and IDNDD")+theme(legend.position = "bottom") + ylab("Prevalence (%)") + xlab("Age (months)")
+p1
+
+```
+
+
+```{r}
+Data_Analysis_Moswane_Benjamin <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis Moswane Benjamin.xlsx", range = "a15:c27")
+View(Data_Analysis_Moswane_Benjamin)
+
+```
+
+```{r}
+Data_Analysis_Moswane_Benjamin$Age <- factor(Data_Analysis_Moswane_Benjamin$Age, levels=unique(Data_Analysis_Moswane_Benjamin$Age))
+
+```
+
+```{r}
+p1 <- ggplot(Data_Analysis_Moswane_Benjamin, aes(Age, Percentage, fill = Diarrhoea))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Prevalence of B. thermophilus in IDD and IDNDD")+theme(legend.position = "bottom") + ylab("Prevalence (%)") + xlab("Age (months)")
+p1
+
+```
+
+
+
+
+
+
+################################# INDD###########################################
+
+```{r}
+Data_Analysis_Moswane_Benjamin <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis Moswane Benjamin.xlsx", range = "m16:n22")
+```
+
+
+```{r}
+Data_Analysis_Moswane_Benjamin$Age <- factor(Data_Analysis_Moswane_Benjamin$Age, levels= Data_Analysis_Moswane_Benjamin$Age)
+```
+
+
+```{r}
+p2 <- ggplot(Data_Analysis_Moswane_Benjamin, aes(Age, Percentage, fill = Age))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Prevalence of B. longum in IDNDD")+theme(legend.position = "none") + ylab("Prevalence (%)") + xlab("Age (months)")
+
+p2
+```
+```{r}
+
+p1 |p2
+```
+
+########################################################################Abundance
+
+
+
+
+
+
+
+
+
+################################# Abundance###########################################
+```{r}
+
+Data_Analysis_Moswane_Benjamin <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis Moswane Benjamin.xlsx", range = "A51:B57")
+view(Data_Analysis_Moswane_Benjamin)
+```
+
+```{r}
+Data_Analysis_Moswane_Benjamin $Age <- factor(Data_Analysis_Moswane_Benjamin$Age, levels=Data_Analysis_Moswane_Benjamin $Age)
+```
+
+
+
+```{r}
+p3 <- ggplot(Data_Analysis_Moswane_Benjamin, aes(Age, Log, fill = Age))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Abundance of B. longum in IDD")+theme(legend.position = "none") + ylab("Abundance (log)") + xlab("Age (months)")
+
+p3
+```
+
+################################# Abundance in IDNDD ###########################################
+```{r}
+
+Data_Analysis_Moswane_Benjamin <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis Moswane Benjamin.xlsx", range = "l50:m56")
+view(Data_Analysis_Moswane_Benjamin)
+```
+
+```{r}
+Data_Analysis_Moswane_Benjamin $Age <- factor(Data_Analysis_Moswane_Benjamin $Age, levels=Data_Analysis_Moswane_Benjamin $Age)
+```
+
+
+
+```{r}
+p4 <- ggplot(Data_Analysis_Moswane_Benjamin, aes(Age, Log, fill = Age))+ geom_barplot(stat="identity")+ggtitle("Abundance of B. longum in IDNDD")+theme(legend.position = "none") + ylab("Abundance (log)") + xlab("Age (months)")
+
+p4
+```
+
+```{r}
+p3|p4
+```
+
+
+
+
+########################################################################B thermophilus
+
+```{r}
+library(readxl)
+Data_Analysis_B_Thermophilus <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis B Thermophilus.xlsx", range = "a16:b22")
+View(Data_Analysis_B_Thermophilus)
+```
+
+```{r}
+Data_Analysis_B_Thermophilus $Age <- factor(Data_Analysis_B_Thermophilus $Age, levels=Data_Analysis_B_Thermophilus $Age)
+```
+
+
+
+```{r}
+p1 <- ggplot(Data_Analysis_B_Thermophilus, aes(Age, Percentage, fill = Age))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Prevalence of B. thermophilus in IDD")+theme(legend.position = "none") + ylab("Prevalence (%)") + xlab("Age (months)")
+
+p1
+```
+
+
+```{r}
+Data_Analysis_B_Thermophilus <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis B Thermophilus.xlsx", range = "L16:m22")
+```
+
+
+```{r}
+Data_Analysis_B_Thermophilus $Age <- factor(Data_Analysis_B_Thermophilus $Age, levels=Data_Analysis_B_Thermophilus  $Age)
+```
+
+
+```{r}
+p2 <- ggplot(Data_Analysis_B_Thermophilus , aes(Age, Percentage, fill = Age))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Prevalence of B. thermophilus in IDNDD")+theme(legend.position = "none") + ylab("Prevalence (%)") + xlab("Age (months)")
+
+p2
+```
+
+
+```{r}
+
+p1 |p2
+```
+
+
+
+
+##############################################################Abundance
+
+```{r}
+
+Data_Analysis_B_Thermophilus <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis B Thermophilus.xlsx", range = "a54:b60")
+```
+
+```{r}
+Data_Analysis_B_Thermophilus $Age <- factor(Data_Analysis_B_Thermophilus $Age, levels=Data_Analysis_B_Thermophilus $Age)
+```
+
+
+
+```{r}
+p3 <- ggplot(Data_Analysis_B_Thermophilus, aes(Age, Log, fill = Age))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Abundance of B. thermophilus in IDD")+theme(legend.position = "none") + ylab("Abundance (log)") + xlab("Age (months)")
+
+p3
+```
+
+
+
+```{r}
+library(readxl)
+Data_Analysis_B_Thermophilus <- read_excel("C:/Users/benja/Desktop/Medical Virology Honours/Research Project/Laboratory work/Data Analysis B Thermophilus.xlsx", range = "L50:m56")
+View(Data_Analysis_B_Thermophilus)
+```
+
+```{r}
+Data_Analysis_B_Thermophilus $Age <- factor(Data_Analysis_B_Thermophilus $Age, levels=Data_Analysis_B_Thermophilus $Age)
+```
+
+
+
+```{r}
+p4 <- ggplot(Data_Analysis_B_Thermophilus, aes(Age, Log, fill = Age))+ geom_bar(stat = "identity", position = "dodge")+ggtitle("Abundance of B. thermophilus in IDNDD")+theme(legend.position = "none") + ylab("Abundance (log)") + xlab("Age (months)")
+
+p4
+```
+
+
+```{r}
+p3|p4
+```
