@@ -1,0 +1,341 @@
+---
+title: "Valentia"
+author: "Vee"
+date: "2024-02-06"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+library(mcr)
+library(tidyverse)
+library(corrplot)
+library(RColorBrewer)
+library(mice)
+library(tidyverse)
+library(gtsummary)
+```
+
+```{r}
+library(readxl)
+Vale <- read_excel("C:/Users/VUSI/Downloads/DATA ANALYS VALENTIA (2).xlsx", 12)
+View(Vale)
+```
+
+```{r}
+Vale_new <- Vale
+Vale_new[Vale_new < 0] <- NA
+Vale_new
+```
+
+```{r}
+Vale_new %>% select(Age, GENDER, TOTAL_CHOLESTEROL, TRIGLYCERIDE, HDL_CHOLESTEROL, Non_HDL, STATUS)%>% 
+  tbl_summary(by= STATUS , add_n() %>% bold_labels()%>% add_ci() %>% add_p() %>% add_overall())
+```
+
+
+```{r}
+md.pattern(Vale)
+```
+
+```{r}
+imputed_Data <- mice(Vale_new, m=5, maxit = 50, method = 'pmm', seed = 500)
+
+summary(imputed_Data)
+```
+
+```{r}
+completeData <- complete(imputed_Data,2)
+completeData
+```
+
+
+```{r}
+completeData %>% select(Age, GENDER, TOTAL_CHOLESTEROL, TRIGLYCERIDE, HDL_CHOLESTEROL, Non_HDL, STATUS)%>% 
+  tbl_summary(by= STATUS , statistic = list(all_continuous()~ "{mean}({sd})"))%>% bold_labels()%>% add_ci() %>% add_p() %>% add_overall()
+```
+
+
+
+
+
+
+
+
+
+```{r}
+library(ggpubr)
+model <- lm(MARTIN~STATUS, data = completeData)
+
+model<- ggqqplot(residuals(model), main = "Martin-hopkins qq-plot")
+model
+```
+
+
+
+
+
+```{r}
+model1 <- lm(FRIEDEWALD~STATUS, data = completeData)
+
+model1<- ggqqplot(residuals(model1),main = "Friedewald qq-plot")
+model1
+```
+
+
+```{r}
+model2 <- lm(SAMPSON~STATUS, data = completeData)
+
+model2 <- ggqqplot(residuals(model2), main = "Sampson qq-plot")
+model2
+```
+
+
+
+```{r}
+library(patchwork)
+
+
+model|model1|model2
+```
+
+
+```{r}
+ks.test(completeData$LDL_CHOLESTEROL, "pnorm", mean = 0, sd = 1)
+```
+
+
+```{r}
+ks.test(completeData$FRIEDEWALD, "pnorm", mean = 0, sd = 1)
+```
+
+
+```{r}
+ks.test(completeData$MARTIN, "pnorm", mean = 0, sd = 1)
+```
+
+```{r}
+ks.test(completeData$SAMPSON, "pnorm", mean = 0, sd = 1)
+```
+
+```{r}
+plot(model, 1)
+```
+
+
+
+
+
+
+```{r}
+ValeR <- mcreg(completeData$ LDL_CHOLESTEROL, completeData$ FRIEDEWALD, method.reg = "PBequi", methodlarge = T)
+
+printSummary(ValeR)
+```
+
+```{r}
+plot(ValeR, main= "LDL CHOLESTEROL vs FRIEDEWALD")
+```
+
+
+```{r}
+ValeR1 <- mcreg(completeData$ LDL_CHOLESTEROL, completeData$ MARTIN, method.reg = "PBequi", methodlarge = T)
+
+printSummary(ValeR1)
+```
+
+```{r}
+plot(ValeR1, main = "LDL CHOLESTEROL vs MARTIN HOPKINS")
+```
+
+
+
+
+```{r}
+ValeR2 <- mcreg(completeData$ LDL_CHOLESTEROL, completeData$ SAMPSON, method.reg = "PBequi", methodlarge = T)
+
+printSummary(ValeR2)
+```
+
+
+```{r}
+plot(ValeR2, main= " LDL CHOLESTEROL vs SAMPSON")
+```
+
+```{r}
+any(is.na(completeData))
+
+```
+
+
+```{r}
+data <- na.omit(completeData)
+```
+
+```{r}
+data
+```
+
+
+#Testing for homogeneity
+
+
+
+```{r}
+library(brunnermunzel)
+```
+
+
+```{r}
+#extract the two numeric vectors
+x <- data$LDL_CHOLESTEROL
+y <- data$MARTIN
+```
+
+
+```{r}
+Val1 <- brunnermunzel.test(x,y)
+Val1
+```
+
+```{r}
+x1 <- data$LDL_CHOLESTEROL
+y1 <- data$FRIEDEWALD
+```
+
+```{r}
+Val2 <- brunnermunzel.test(x1,y1)
+Val2
+```
+
+```{r}
+x2 <- data$LDL_CHOLESTEROL
+y2 <- data$SAMPSON
+```
+
+```{r}
+Val3 <- brunnermunzel.test(x2,y2)
+Val3
+```
+
+```{r}
+boxplot(y,y1,y2,x, main= "Distribution of the Shape", ylim=c(0,20),names = c("Martin Hopkins", "Friedewald", "Sampson", "LDLC direct"))
+text(x= 2, y= 18, labels= "p-value < 2.2e-16 (Kruskal wallis)")
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+#OBJECTIVE 1
+
+
+```{r}
+library(readxl)
+Favor <- read_excel("C:/Users/VUSI/Downloads/DATA ANALYS VALENTIA (2).xlsx", 12, range = "a6774:L9532")
+View(Favor)
+```
+
+```{r}
+Favor_new <- Favor
+Favor_new[Favor_new < 0] <- NA
+Favor_new
+```
+
+```{r}
+Favor_new %>% select(Age, GENDER, TOTAL_CHOLESTEROL, TRIGLYCERIDE, HDL_CHOLESTEROL, Non_HDL, STATUS)%>% 
+  tbl_summary(by= STATUS , statistic = list(all_continuous()~ "{mean}({sd})"))%>% bold_labels()%>% add_ci() %>% add_p() %>% add_overall()
+```
+
+
+```{r}
+imputed_Data1 <- mice(Favor_new, m=5, maxit = 50, method = 'pmm', seed = 500)
+
+summary(imputed_Data1)
+```
+
+```{r}
+completeData1 <- complete(imputed_Data1,2)
+completeData1
+```
+
+
+```{r}
+completeData1 %>% select(Age, GENDER, TOTAL_CHOLESTEROL, TRIGLYCERIDE, HDL_CHOLESTEROL, Non_HDL, STATUS)%>% 
+  tbl_summary(by= STATUS , statistic = list(all_continuous()~ "{mean}({sd})"))%>% bold_labels()%>% add_ci() %>% add_p() %>% add_overall()
+```
+
+
+```{r}
+ks.test(completeData1$LDL_CHOLESTEROL, "pnorm", mean = 0, sd = 1)
+```
+
+
+```{r}
+ks.test(completeData1$FRIEDEWALD, "pnorm", mean = 0, sd = 1)
+```
+
+
+```{r}
+ks.test(completeData1$MARTIN, "pnorm", mean = 0, sd = 1)
+```
+
+```{r}
+ks.test(completeData1$SAMPSON, "pnorm", mean = 0, sd = 1)
+```
+
+```{r}
+plot(model1, 1)
+```
+
+
+
+```{r}
+FavR <- mcreg(completeData1$ LDL_CHOLESTEROL, completeData1$ FRIEDEWALD, method.reg = "PBequi", methodlarge = T)
+
+printSummary(FavR)
+```
+
+```{r}
+plot(FavR, main= "LDL CHOLESTEROL vs FRIEDEWALD")
+```
+
+
+```{r}
+FavR1 <- mcreg(completeData$ LDL_CHOLESTEROL, completeData$ MARTIN, method.reg = "PBequi", methodlarge = T)
+
+printSummary(FavR1)
+```
+
+```{r}
+plot(FavR1, main = "LDL CHOLESTEROL vs MARTIN HOPKINS")
+```
+
+
+
+
+```{r}
+FavR2 <- mcreg(completeData$ LDL_CHOLESTEROL, completeData$ SAMPSON, method.reg = "PBequi", methodlarge = T)
+
+printSummary(FavR2)
+```
+
+
+```{r}
+plot(FavR2, main= " LDL CHOLESTEROL vs SAMPSON")
+```
+
+
+
+
+
