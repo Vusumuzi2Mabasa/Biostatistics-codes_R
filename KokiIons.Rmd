@@ -1,0 +1,305 @@
+---
+title: "Koki"
+author: "Vee"
+date: "2023-11-12"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(rstatix)
+library(ggpubr)
+library(readxl)
+```
+
+```{r}
+library(readxl)
+Apies_River_Data <- read_excel("C:/Users/VUSI/Downloads/Apies River Data.xlsx", 4, range = "f1:i25")
+
+Apies_River_Data
+```
+
+
+```{r}
+df.summary <- aggregate(Conc.~ Parameter, Apies_River_Data, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary <- data.frame(Apies_River_Data$Season, Apies_River_Data$Parameter, Apies_River_Data$Site, Apies_River_Data$Conc., df.summary$Conc.) 
+
+
+
+colnames(df.summary) <- c("Season", "Parameter","Site", "Concentration", "se")
+
+df.summary
+```
+
+
+```{r}
+ion <- ggplot(df.summary, aes(Parameter, Concentration)) + geom_col(aes(fill= Site), position = position_dodge(0.8), width = 0.7) + geom_errorbar(aes(ymin=Concentration-se, ymax = Concentration+se, group= Site),padding = 0.5, width = 0.2, position = position_dodge(0.8)) + scale_fill_manual(values = c("grey","blue", "brown", "purple")) + ggtitle("Ions")+ ylab("Concentration(mg/l)") + xlab("Compounds")
+
+ion + facet_wrap(~Season)
+```
+
+
+
+```{r}
+library(corrplot)
+library(RColorBrewer)
+```
+
+
+```{r}
+library(readxl)
+Apies_River_Data <- read_excel("C:/Users/VUSI/Downloads/Apies River Data.xlsx", 4, range = "a35:m43")
+
+Apies_River_Data
+```
+
+
+```{r}
+Koki <- cor(Apies_River_Data)
+
+test <- cor.mtest(Apies_River_Data, conf.level= 0.95)
+
+
+```
+
+
+```{r}
+corrplot(Koki, method= "color", type = "lower", order= "original", p.mat = test$p, sig.level= c(0.001, 0.01, 0.05), pch.cex = 0.9, insig = "p-value", pch.col = "black")
+```
+
+
+
+```{r}
+library(readxl)
+Apies_River_Data <- read_excel("C:/Users/VUSI/Downloads/PCA DATA 3.xlsx", range = "g3:o67")
+View(Apies_River_Data)
+Apies_River_Data
+
+```
+
+```{r}
+Apies_River_Data$Site <- as.factor(Apies_River_Data$Site)
+Apies_River_Data
+```
+
+
+
+```{r}
+library(ggrepel)
+# Run PCA and extract scores and loadings
+koki_pca <- prcomp(Apies_River_Data[-9], scale = T)
+# Getting proportion of variance explained by PC1 and PC2
+prop_var <- koki_pca$sdev^2 / sum(koki_pca$sdev^2)
+scores <- as.data.frame(koki_pca$x)
+scores$Site <- Apies_River_Data$Site
+loadings <- as.data.frame(koki_pca$rotation)
+loadings$Taxa <- rownames(loadings)
+```
+
+
+```{r}
+# Create biplot
+biplot <- ggplot(data = scores, aes(x = PC1, y = PC2)) +
+          geom_point(aes(color = Site), size = 2, shape = 19) +
+          geom_segment(
+                    data = loadings, aes(
+                              x = 0, y = 0,
+                              xend = PC1 , yend = PC2
+                    ),
+                    arrow = arrow(length = unit(0.3, "cm"), type = "open", angle = 25),
+                    size = 1, color = "darkblue"
+          )
+biplot
+```
+
+```{r}
+scale <- 5
+# Create biplot
+biplot <- ggplot(data = scores, aes(x = PC1, y = PC2)) +
+          geom_point(aes(color = Site), size = 2, shape = 19) +
+          geom_segment(
+                    data = loadings, aes(
+                              x = 0, y = 0,
+                              xend = PC1 * 10, yend = PC2 * 5
+                    ),
+                    arrow = arrow(length = unit(0.5, "cm"), type = "open", angle = 25),
+                    size = 0.7, color = "blue"
+          )
+biplot
+```
+
+```{r}
+biplot +
+          # Primary and secondary scales
+          scale_x_continuous(
+                    limits = c(-5, 5), name = paste0("PC1 (",round(prop_var[1]*100, digits = 5), " %)"),
+                    sec.axis = sec_axis(~ . / scale, name = "Loadings on PC1")
+          ) +
+          scale_y_continuous(
+                    limits = c(-5, 5), name = paste0("PC2 (",round(prop_var[2]*100, digits = 5), " %)"),
+                    sec.axis = sec_axis(~ . / scale, name = "Loadings on PC2")
+          ) +
+          geom_label_repel(
+                    data = loadings,
+                    aes(
+                              label = rownames(loadings),
+                              x = PC1 * scale,
+                              y = PC2 * scale
+                    ),
+                    box.padding = 0.2,
+                    point.padding = 0.3,
+                    size = 3, # Change the font size of the text here
+                    color = "black", # Change the color of the text here
+                    arrow = arrow(length = unit(0.5, "cm"), type = "closed", angle = 25),
+                    force = 4
+          ) +
+          # Theme with modified axis text color
+          theme_bw() +
+          theme(
+                    axis.title.x.top = element_text(color = "darkblue"),
+                    axis.title.y.right = element_text(color = "darkblue"),
+                    axis.text.x.top = element_text(color = "darkblue"),
+                    axis.ticks.x.top = element_line(color = "darkblue"),
+                    axis.text.y.right = element_text(color = "darkblue"),
+                    axis.ticks.y.right = element_line(color = "darkblue"), legend.position = "top"
+          ) +
+          labs(title = "PCA bi-plot - Apies river")
+```
+
+
+
+
+
+
+######################## METAL ANALYSIS ###################################################
+```{r}
+library(readxl)
+New_Apies_data <- read_excel("C:/Users/VUSI/Downloads/New Apies data.xlsx")
+New_Apies_data
+```
+
+################################# Data diagnosis (Checking data normality and Homogeneity of variances) ###########################################
+```{r}
+model <- lm(Conc~Metal, data = New_Apies_data)
+
+ggqqplot(residuals(model))
+```
+
+```{r}
+shapiro_test(residuals(model))
+```
+
+```{r}
+plot(model, 1)
+```
+
+```{r}
+New_Apies_data %>% levene_test(Conc ~ Metal)
+```
+
+```{r}
+
+#Welch one way test
+koks <- New_Apies_data %>% welch_anova_test(Conc~Metal)
+koks
+```
+
+```{r}
+koks2 <- New_Apies_data %>% games_howell_test(Conc~Metal)
+koks2
+```
+
+```{r}
+pbk <- ggboxplot(New_Apies_data, x="Metal", y="Conc", fill = "Season")
+pbk
+```
+
+
+```{r}
+#kok2 <- kok2 %>% add_xy_position(x= "Metal") 
+
+#pbk + stat_pvalue_manual(kok2, hide.ns = T)+ labs(subtititle=get_test_label(kok, detailed = T), caption = get_pwc_label(kok2)) + ylab("Concentration(mg/l)") + xlab("Compounds")+ scale_fill_manual(values = c("grey", "brown"))
+
+
+```
+
+
+
+```{r}
+anova <- ggplot(New_Apies_data, aes(Metal, Conc)) + geom_boxplot(aes(fill =Season))+stat_compare_means(method = "anova", label.y = 1080, hide.ns = F)+ stat_compare_means(label = "p.signif", label.y = 1010, method = "t.test", ref.group = ".all.")+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown"))
+
+anova + facet_wrap(Site)
+```
+
+
+```{r}
+kruskal <- ggplot(New_Apies_data, aes(Metal, Conc)) + geom_boxplot(aes(fill =Season))+stat_compare_means(method = "kruskal.test", label.y = 1080, hide.ns = F)+ stat_compare_means(label = "p.signif", label.y = 1010, method = "t.test", ref.group = ".all.")+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown"))
+
+kruskal
+```
+
+```{r}
+
+```
+
+
+```{r}
+library(readxl)
+New_Apies_data1 <- read_excel("C:/Users/VUSI/Downloads/New Apies data.xlsx", 2)
+
+```
+
+
+```{r}
+pr <- ggplot(New_Apies_data1, aes(Metal, Conc)) + geom_boxplot(aes(fill =Season))+stat_compare_means(method = "anova", label.y = 1.5, hide.ns = F)+ stat_compare_means(label = "p.signif", label.y = 1.3, method = "t.test", ref.group = ".all.")+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown"))
+
+pr
+```
+
+
+```{r}
+pr <- ggplot(New_Apies_data1, aes(Metal, Conc)) + geom_boxplot(aes(fill =Season))+stat_compare_means(method = "kruskal.test", label.y = 1.5, hide.ns = F)+ stat_compare_means(label = "p.signif", label.y = 1.3, method = "t.test", ref.group = ".all.")+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown"))
+
+pr
+```
+
+
+
+
+
+
+```{r}
+model <- lm(Conc~Metal, data = New_Apies_data1)
+
+ggqqplot(residuals(model))
+```
+
+
+
+```{r}
+shapiro_test(residuals(model))
+```
+
+```{r}
+plot(model, 1)
+```
+
+
+```{r}
+New_Apies_data1 %>% levene_test(Conc ~ Metal)
+```
+
+```{r}
+kok <- New_Apies_data1 %>% welch_anova_test(Conc~Metal)
+kok
+```
+
+
+```{r}
+kok2 <- New_Apies_data1 %>% games_howell_test(Conc~Metal)
+kok2
+```

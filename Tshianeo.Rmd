@@ -1,0 +1,759 @@
+---
+title: "Tshianeo"
+author: "Vee"
+date: "2023-11-29"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r}
+options(knitr.duplicate.label = "allow")
+```
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(rstatix)
+library(ggpubr)
+library(readr)
+```
+
+```{r setup, include=FALSE}
+library(readxl)
+
+Tshi<- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx", range= "a4:d52")
+
+View(Tshi)
+```
+
+
+```{r}
+df.summary <- aggregate(Results~ Priming, Tshi, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary <- data.frame(Tshi$Bean, Tshi$Treatment, Tshi$Priming, Tshi$Results, df.summary$Results) 
+
+
+
+colnames(df.summary) <- c("Bean", "Treatment","Priming", "Percentage", "se")
+
+df.summary
+```
+
+```{r}
+kruskal <- ggplot(df.summary, aes(Treatment, Percentage)) + geom_boxplot(aes(fill =Priming))+stat_compare_means(method="anova", label = "p.signif", label.y = 53, hide.ns = F)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown")) + ggtitle("Germination rate							
+")+ ylab("Percentage (%)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+kruskal+ facet_wrap(~ Bean)
+```
+
+
+
+
+```{r}
+ionA <- ggplot(df.summary, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8) + scale_fill_manual(values = c("blue","grey", "brown", "purple")) + ggtitle("Germination rate							
+")+ ylab("Percentage (%)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionA + facet_wrap(~Bean, scales = "free_x") + theme(strip.text.x = element_text(angle = 0))+ stat_compare_means(label = "p.signif", label.y = 55, method = "anova")+ theme(legend.title = element_blank())
+```
+
+
+```{r}
+Ts <- df.summary %>% games_howell_test(Percentage~Treatment)
+Ts
+```
+####################################################################################################################################################################################
+
+```{r setup, include=FALSE}
+library(readr)
+Vee <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",2, range= "a1:d81")
+View(Vee)
+```
+
+```{r}
+Vee$Treatment <- as.factor(Vee$Treatment)
+Vee$Priming <- as.factor(Vee$Priming)
+```
+
+```{r}
+df.summary1 <- aggregate(Results~ Priming, Vee, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary1 <- data.frame(Bean = Vee$Bean,Treatment = Vee$Treatment, Priming = Vee$Priming, Results = Vee$Results
+)
+
+colnames(df.summary1) <- c("Bean", "Treatment","Priming", "Results")
+
+df.summary1
+```
+
+
+```{r}
+kruskalA <- ggplot(df.summary1, aes(Treatment, Percentage)) + geom_boxplot(aes(fill =Priming))+stat_compare_means(method="anova", label = "p.signif", label.y = 17, hide.ns = F)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("blue", "grey")) + ggtitle("Number of leaves							
+")+ ylab("Leaf count (n)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+kruskalA+ facet_wrap(~ Bean)+ theme(legend.position = "bottom")
+```
+
+
+```{r}
+ionB <- ggplot(Vee, aes(Treatment, Results)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8)  + scale_fill_manual(values = c("blue","grey", "brown", "purple")) + ggtitle("Number of leaves							
+")+ ylab("Leaf count (n)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+
+ionB + facet_wrap(~Bean, as.table = T) + theme(strip.text.x = element_text(angle = 0))+ stat_compare_means(label = "p.signif", label.y = 15, method = "anova")+theme(legend.title = element_blank() )
+```
+
+
+```{r}
+Ts1 <- df.summary1 %>% games_howell_test(Percentage~Treatment)
+Ts1
+```
+
+
+####################################################################################################################################################################################################################################################################################################################################################################
+
+```{r}
+
+
+Tshi2 <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",3, range = "a2:d82")
+
+view(Tshi2)
+```
+
+
+```{r}
+df.summary3 <- aggregate(Results~ Priming, Tshi2, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary3 <- data.frame(Bean=Tshi2$Bean, Treatment=Tshi2$Treatment, Priming=Tshi2$Priming, Results =Tshi2$Results) 
+
+
+
+colnames(df.summary3) <- c("Bean", "Treatment","Priming", "Percentage")
+
+df.summary3
+```
+
+
+```{r}
+kruskalB <- ggplot(df.summary3, aes(Treatment, Percentage)) + geom_boxplot(aes(fill =Priming))+stat_compare_means(method="anova", label = "p.signif", label.y = 50, hide.ns = F)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown")) + ggtitle("Leaf area						
+")+ ylab("Leaf area (cm2)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+kruskalB+ facet_wrap(~ Bean)+ theme(legend.position = "bottom")
+```
+
+```{r}
+ionC <- ggplot(df.summary3, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8) + scale_fill_manual(values = c("blue","grey", "brown", "purple")) + ggtitle("Leaf area							
+")+ ylab("Leaf area (cm2)") + xlab("Concentration") + theme(legend.position = "bottom")
+
+ionC + facet_wrap(~Bean) + theme(strip.text.x = element_text(angle = 0))+ stat_compare_means(label = "p.signif", label.y = 50, method = "anova") +theme(legend.title = element_blank())
+```
+
+
+
+```{r}
+Ts2 <- df.summary3 %>% games_howell_test(Percentage~Treatment)
+Ts2
+```
+
+###########################################################################################################################################################################################################################################################################
+
+```{r}
+
+Tshi3 <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",4, range = "a2:d82")
+
+view(Tshi3)
+```
+
+
+```{r}
+df.summary4 <- aggregate(Results~ Priming, Tshi3, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary4 <- data.frame(Bean=Tshi3$Bean, Treatment=Tshi3$Treatment, Priming=Tshi3$Priming,Results= Tshi3$Results) 
+
+
+
+colnames(df.summary4) <- c("Bean", "Treatment","Priming", "Percentage")
+
+df.summary4
+```
+
+
+
+```{r}
+kruskalC <- ggplot(df.summary4, aes(Treatment, Percentage)) + geom_boxplot(aes(fill =Priming))+stat_compare_means(method="anova", label = "p.signif", label.y = 27, hide.ns = F)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown")) + ggtitle("Shoot length						
+")+ ylab("Shoot length (cm)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+kruskalC+ facet_wrap(~ Bean)+ theme(legend.position = "bottom")
+```
+
+```{r}
+ionD <- ggplot(df.summary4, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8) + scale_fill_manual(values = c("blue","grey", "brown", "purple")) + ggtitle("Shoot length							
+")+ ylab("Shoot length (cm)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionD + facet_wrap(~Bean) + theme(strip.text.x = element_text(angle = 0))+ stat_compare_means(label = "p.signif", label.y = 25, method = "anova") + theme(legend.title = element_blank())
+```
+
+```{r}
+Ts3 <- df.summary4 %>% games_howell_test(Percentage~Treatment)
+Ts3
+```
+
+
+###########################################################################################################################################################################################################################################################################
+
+```{r}
+
+Tshi4 <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",5, range = "a2:d18")
+
+view(Tshi4)
+```
+
+
+```{r}
+df.summary5 <- aggregate(Results~ Priming, Tshi4, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary5 <- data.frame(Days=Tshi4$Days, Treatment= Tshi4$Treatment, Priming= Tshi4$Priming, Results=  Tshi4$Results) 
+
+
+
+colnames(df.summary5) <- c("Bean", "Treatment","Priming", "Percentage")
+
+df.summary5
+```
+
+
+```{r}
+kruskalD <- ggplot(df.summary5, aes(Treatment, Percentage)) + geom_boxplot(aes(fill =Priming))+stat_compare_means(label.y = 25, hide.ns = T)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown")) + ggtitle("Root length						
+")+ ylab("Root length (cm)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+kruskalD+ facet_wrap(~ Bean)+ theme(legend.position = "bottom")
+```
+
+```{r}
+ionE <- ggplot(df.summary5, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8) +stat_compare_means(method="anova", label = "p.signif", hide.ns = F)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("blue", "grey", "brown")) + ggtitle("Root length						
+")+ ylab("Root length (cm)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+
+
+ionE + facet_wrap(~Bean) + theme(strip.text.x = element_text(angle = 0))+ stat_compare_means(label = "p.signif", method = "anova") + theme(legend.title = element_blank())
+```
+
+```{r}
+Ts4 <- df.summary5 %>% games_howell_test(Percentage~Treatment)
+Ts4
+```
+
+
+########################################################################################################################################################################################################################################################################
+
+```{r}
+Tshi5 <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",6, range = "a2:d82")
+
+view(Tshi5)
+```
+
+
+```{r}
+df.summary6 <- aggregate(Results~ Priming, Tshi4, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary6 <- data.frame(Days=Tshi5$Days, Treatment= Tshi5$Treatment, Priming= Tshi5$Priming, Results= Tshi5$Results) 
+
+
+
+colnames(df.summary6) <- c("Bean", "Treatment","Priming", "Percentage")
+
+df.summary6
+```
+
+```{r}
+kruskalE <- ggplot(df.summary6, aes(Treatment, Percentage)) + geom_boxplot(aes(fill =Priming))+stat_compare_means(method="anova", label = "p.signif", label.y = 1, hide.ns = F)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown")) + ggtitle("Fluorescence						
+")+ ylab("Fluorescence (Fv/Fm)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+kruskalE+ facet_wrap(~ Bean)+ theme(legend.position = "bottom")
+```
+
+
+```{r}
+ionF <- ggplot(df.summary6, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8) + scale_fill_manual(values = c("blue","grey", "brown", "purple")) + ggtitle("Fluorescence								
+")+ ylab("Fluorescence (Fv/Fm)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+
+ionF + facet_wrap(~Bean) + theme(strip.text.x = element_text(angle = 0))+ stat_compare_means(method="anova", label = "p.signif", label.y = 1, hide.ns = F)+ theme(legend.title = element_blank())
+```
+
+
+```{r}
+Ts5 <- df.summary6 %>% games_howell_test(Percentage~Treatment)
+Ts5
+```
+ 
+#######################################################################################################################################################################################################################################################################
+
+
+```{r}
+Tshi6 <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",7, range = "a1:d17")
+
+view(Tshi6)
+```
+
+
+```{r}
+df.summary7 <- aggregate(Results~ Priming, Tshi6, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary7 <- data.frame(Days=Tshi6$Days, Treatment= Tshi6$Treatment, Priming=Tshi6$Priming,Results= Tshi6$Results) 
+
+
+
+colnames(df.summary7) <- c("Bean", "Treatment","Priming", "Percentage")
+
+df.summary7
+```
+
+```{r}
+kruskalF <- ggplot(df.summary7, aes(Treatment, Percentage)) + geom_boxplot(aes(fill =Priming))+stat_compare_means(label.y = 45, hide.ns = T)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown")) + ggtitle("Shoot fresh weight					
+")+ ylab("Shoot fresh weight") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+kruskalF+ facet_wrap(~ Bean)+ theme(legend.position = "bottom")
+```
+
+```{r}
+ionG <- ggplot(df.summary7, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8) +stat_compare_means(method="anova", label = "p.signif",hide.ns = F, label.y = 43)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("blue", "grey", "brown")) + ggtitle("Shoot fresh weight						
+")+ ylab(" Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+
+ionG + facet_wrap(~Bean) + theme(strip.text.x = element_text(angle = 0))+theme(legend.title = element_blank())
+```
+
+
+```{r}
+Ts6 <- df.summary7 %>% games_howell_test(Percentage~Treatment)
+Ts6
+```
+
+
+########################################################################################################################################################################################################################################################################
+```{r}
+Tshi6b <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",8, range = "a1:d17")
+
+view(Tshi6b)
+```
+
+
+```{r}
+df.summary7b <- aggregate(Results~ Priming, Tshi6b, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary7b <- data.frame(Days=Tshi6b$Days, Treatment=Tshi6b$Treatment, Priming= Tshi6b$Priming, Results=Tshi6b$Results) 
+
+
+
+colnames(df.summary7b) <- c("Bean", "Treatment","Priming", "Percentage")
+
+df.summary7b
+```
+
+```{r}
+kruskalF <- ggplot(df.summary7b, aes(Treatment, Percentage)) + geom_boxplot(aes(fill =Priming))+stat_compare_means(method="anova", label = "p.signif", label.y = 0.027, hide.ns = F)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "turquoise", "pink")) + ggtitle("Shoot dry weight					
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+kruskalF+ facet_wrap(~ Bean)+ theme(legend.position = "bottom")+ theme(legend.title = element_blank())
+```
+
+```{r}
+ionG <- ggplot(df.summary7b, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8) + ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("blue","grey", "brown")) + ggtitle("Shoot dry weight					
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionG + facet_wrap(~Bean) + theme(strip.text.x = element_text(angle = 0))+ theme(legend.title = element_blank())
+```
+
+```{r}
+Ts6a <- df.summary7b %>% games_howell_test(Percentage~Treatment)
+Ts6a
+```
+
+########################################################################################################################################################################################################################################################################
+
+
+```{r}
+Tshi8 <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",9, range = "a3:d19")
+
+view(Tshi8)
+```
+
+
+```{r}
+df.summary9 <- aggregate(Results~ Priming, Tshi8, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summary9 <- data.frame(Days=Tshi8$Days, Treatment=Tshi8$Treatment, Priming=Tshi8$Priming, Results=Tshi8$Results) 
+
+
+
+colnames(df.summary9) <- c("Bean", "Treatment","Priming", "Percentage")
+
+df.summary9
+```
+
+```{r}
+kruskalF <- ggplot(df.summary9, aes(Treatment, Percentage)) + geom_boxplot(aes(fill =Priming))+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("grey", "brown")) + ggtitle("Root dry weight					
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+kruskalF+ facet_wrap(~ Bean)+ theme(legend.position = "bottom")
+
+
+```
+
+```{r}
+koks <- df.summary9 %>% welch_anova_test(Percentage~Treatment)
+koks
+```
+
+
+```{r}
+ionH <- ggplot(df.summary9, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8) + ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("blue", "grey", "brown")) + ggtitle("Root dry weight					
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+
+
+ionH + facet_wrap(~Bean) + theme(strip.text.x = element_text(angle = 0))+ stat_compare_means(label = "p.signif", label.y = 0.009, method = "anova") + theme(legend.title = element_blank())
+```
+
+```{r}
+Ts8 <- df.summary9 %>% games_howell_test(Percentage~Treatment)
+Ts8
+```
+
+
+```{r}
+Ts9 <- df.summary7b %>% games_howell_test(Percentage~Treatment)
+Ts9
+```
+
+########################################################################################################################################################################################################################################################################
+
+
+```{r}
+TshiA <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",10, range = "a2:d18")
+
+view(TshiA)
+```
+
+
+```{r}
+df.summaryA <- aggregate(Results~ Priming, TshiA, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryA <- data.frame(Days=TshiA$Days, Treatment=TshiA$Treatment, Priming=TshiA$Priming, Results= TshiA$Results) 
+
+
+
+colnames(df.summaryA) <- c("Bean", "Treatment","Priming", "Percentage")
+
+df.summaryA$Percentage <- as.numeric(df.summaryA$Percentage)
+```
+
+```{r}
+ionI <- ggplot(df.summaryA, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.9), width = 0.8) +  stat_compare_means(label = "p.signif", label.y = 5, hide.ns = T)+ ylab("Concentration(mg/l)") + xlab("Compounds") + scale_fill_manual(values = c("blue", "grey", "brown")) + ggtitle("Root fresh weight					
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionI + facet_wrap(~Bean) + theme(strip.text.x = element_text(angle = 0))+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")+ theme(legend.title = element_blank())
+```
+
+
+```{r}
+Ts9a <- df.summaryA %>% games_howell_test(Percentage~Treatment)
+Ts9a
+```
+########################################################################################################################################################################################################################################################################
+
+
+
+```{r}
+TshiB <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",6, range = "a2:d42")
+
+view(TshiB)
+```
+
+
+```{r}
+df.summaryB <- aggregate(Results~ Priming, TshiB, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryB <- data.frame(TshiB$Days, TshiB$Treatment, TshiB$Priming, TshiB$Results, df.summaryB$Results) 
+
+
+
+colnames(df.summaryB) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryB
+```
+
+```{r}
+ionJ <- ggplot(df.summaryB, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.6, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Fluorescence - Runner bean							
+")+ ylab("Fluorescence (Fv/Fm)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionJ + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+########################################################################################################################################################################################################################################################################
+
+
+```{r}
+TshiC <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",6, range = "g2:j42")
+
+view(TshiC)
+```
+
+
+```{r}
+df.summaryC <- aggregate(Results~ Priming, TshiC, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryC <- data.frame(TshiC$Days, TshiC$Treatment, TshiC$Priming, TshiC$Results, df.summaryC$Results) 
+
+
+
+colnames(df.summaryC) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryC
+```
+
+```{r}
+ionK <- ggplot(df.summaryC, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.6, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Fluorescence - Bush bean							
+")+ ylab("Fluorescence (Fv/Fm)") + xlab(" Concentration")+ theme(legend.position = "bottom")
+
+ionK + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+########################################################################################################################################################################################################################################################################
+
+
+
+```{r}
+TshiD <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",7, range = "a1:d9")
+
+view(TshiD)
+```
+
+
+```{r}
+df.summaryD <- aggregate(Results~ Priming, TshiD, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryD <- data.frame(TshiD$Days, TshiD$Treatment, TshiD$Priming, TshiD$Results, df.summaryD$Results) 
+
+
+
+colnames(df.summaryD) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryD
+```
+
+```{r}
+ionL <- ggplot(df.summaryD, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.5, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Shoot fresh weight - Runner bean							
+") + ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionL + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+########################################################################################################################################################################################################################################################################
+
+```{r}
+
+TshiE <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",7, range = "F1:J9")
+
+
+```
+
+
+```{r}
+df.summaryE <- aggregate(Results~ Priming, TshiE, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryE <- data.frame(TshiE$Days, TshiE$Treatment, TshiE$Priming, TshiE$Results, df.summaryE$Results) 
+
+
+
+colnames(df.summaryE) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryE
+```
+
+```{r}
+ionM <- ggplot(df.summaryE, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.5, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Shoot fresh weight - Bush bean							
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionM + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+########################################################################################################################################################################################################################################################################
+```{r}
+TshiF <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",8, range = "a1:d9")
+
+
+```
+
+
+```{r}
+df.summaryF <- aggregate(Results~ Priming, TshiF, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryF <- data.frame(TshiF$Days, TshiF$Treatment, TshiF$Priming, TshiF$Results, df.summaryF$Results) 
+
+
+
+colnames(df.summaryF) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryF
+```
+
+```{r}
+ionN <- ggplot(df.summaryF, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.5, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Shoot dry weight - Runner bean							
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionN + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+########################################################################################################################################################################################################################################################################
+
+```{r}
+TshiG <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",8, range = "F1:J9")
+
+
+```
+
+
+```{r}
+df.summaryG <- aggregate(Results~ Priming, TshiG, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryG <- data.frame(TshiG$Days, TshiG$Treatment, TshiG$Priming, TshiG$Results, df.summaryG$Results) 
+
+
+
+colnames(df.summaryG) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryG
+```
+
+```{r}
+ionO <- ggplot(df.summaryG, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.5, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Shoot dry weight - Bush bean							
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionO + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+########################################################################################################################################################################################################################################################################
+
+```{r}
+TshiH <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",9, range = "a3:d11")
+
+
+```
+
+
+```{r}
+df.summaryH <- aggregate(Results~ Priming, TshiH, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryH <- data.frame(TshiH$Days, TshiH$Treatment, TshiH$Priming, TshiH$Results, df.summaryH$Results) 
+
+
+
+colnames(df.summaryH) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryH
+```
+
+```{r}
+ionP <- ggplot(df.summaryH, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.5, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Root dry weight - Runner bean							
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionP + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+
+########################################################################################################################################################################################################################################################################
+
+```{r}
+TshiI <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",9, range = "F3:J11")
+
+
+```
+
+
+```{r}
+df.summaryI <- aggregate(Results~ Priming, TshiI, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryI <- data.frame(TshiI$Days, TshiI$Treatment, TshiI$Priming, TshiI$Results, df.summaryI$Results) 
+
+
+
+colnames(df.summaryI) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryI
+```
+
+```{r}
+ionQ <- ggplot(df.summaryI, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.5, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Root dry weight - Bush bean							
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionQ + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+########################################################################################################################################################################################################################################################################
+
+```{r}
+TshiJ <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",10, range = "a2:d10")
+
+
+```
+
+
+```{r}
+df.summaryJ <- aggregate(Results~ Priming, TshiJ, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryJ <- data.frame(TshiJ$Days, TshiJ$Treatment, TshiJ$Priming, TshiJ$Results, df.summaryJ$Results) 
+
+
+
+colnames(df.summaryJ) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryJ$Percentage <- as.numeric(df.summaryk$Percentage)
+df.summaryk
+```
+
+```{r}
+ionR <- ggplot(df.summaryJ, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.5, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Root fresh weight - Runner bean							
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionR + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+
+########################################################################################################################################################################################################################################################################
+
+```{r}
+Tshik <- read_excel("C:/Users/VUSI/Downloads/Results record sheets.docx (project) (1).xlsx",10, range = "F2:J10")
+
+
+```
+
+
+```{r}
+df.summaryk <- aggregate(Results~ Priming, Tshik, function(x) c( se = sd(x)/sqrt(length(x))))
+
+df.summaryk <- data.frame(Tshik$Days, Tshik$Treatment, Tshik$Priming, Tshik$Results, df.summaryk$Results) 
+
+
+
+colnames(df.summaryk) <- c("Days", "Treatment","Priming", "Percentage", "se")
+
+df.summaryk$Percentage <- as.numeric(df.summaryk$Percentage)
+df.summaryk
+```
+
+```{r}
+ionS <- ggplot(df.summaryk, aes(Treatment, Percentage)) + geom_col(aes(fill= Priming), position = position_dodge(0.8), width = 0.8) + geom_errorbar(aes(ymin=Percentage-se, ymax = Percentage+se, group= Priming),width = 0.5, position = position_dodge(0.8)) + scale_fill_manual(values = c("turquoise","red", "brown", "purple")) + ggtitle("Root fresh weight - Bush bean							
+")+ ylab("Weight (g)") + xlab("Concentration")+ theme(legend.position = "bottom")
+
+ionS + facet_wrap(~Days) + theme(strip.text.x = element_text(angle = 0))#+ stat_compare_means(label = "p.signif", label.y = 5, method = "anova")
+```
+
+
+
+
+
+
+

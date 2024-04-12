@@ -1,0 +1,59 @@
+---
+title: 'TCGAanalyze_EAcomplete & TCGAvisualize_EAbarplot: Enrichment Analysis'
+author: "Vusi Mabasa"
+date: "2023-09-05"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+```{r}
+library(TCGAbiolinks)
+library(DESeq2)
+library(tidyverse)
+library(EDASeq)
+library(edgeR)
+library(clusterProfiler)
+library(enrichplot)
+```
+
+
+# Enrichment Analysis EA
+# Gene Ontology (GO) and Pathway enrichment by DEGs list
+
+```{r}
+Genelist <- rownames(dataDEGsFiltLevel)
+
+library(EnsDb.Hsapiens.v86)
+
+geneIDs1 <- ensembldb::select(EnsDb.Hsapiens.v86, keys= Genelist, keytype = "GENEID", columns = c("SYMBOL","GENEID"))
+
+ansEA <- TCGAanalyze_EAcomplete(
+    TFname = "DEA genes Normal Vs Tumor", geneIDs1$SYMBOL
+)
+
+```
+
+
+# Enrichment Analysis EA (TCGAVisualize)
+# Gene Ontology (GO) and Pathway enrichment barPlot
+
+
+
+```{r}
+myplot <- TCGAvisualize_EAbarplot(
+    tf = rownames(ansEA$ResBP), 
+    GOBPTab = ansEA$ResBP,
+    GOCCTab = ansEA$ResCC,
+    GOMFTab = ansEA$ResMF,
+    PathTab = ansEA$ResPat,
+    nRGTab = Genelist, 
+    nBar = 10,
+   
+)
+
+myplot
+```
+
+

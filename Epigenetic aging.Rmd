@@ -1,0 +1,126 @@
+---
+title: "DNAm age estimation using different methylation-based clocks"
+author: "Vee"
+date: "2024-01-26"
+output: html_document
+---
+
+
+
+```{r}
+library(tidyverse)
+library(Rcpp)
+library(methylclock)
+library(imputeR)
+library(GEOquery)
+library(devtools)
+library(githubinstall)
+library(methylclock)
+library(methylclockData)
+```
+
+
+```{r}
+TestDataset <- get_TestDataset()
+
+cpgs.missing <- checkClocks(TestDataset)
+```
+
+```{r}
+cpgs.missing.GA <- checkClocksGA(TestDataset)
+```
+
+```{r}
+names(cpgs.missing)
+```
+
+```{r}
+commonClockCpgs(cpgs.missing, "Hannum" )
+```
+
+```{r}
+commonClockCpgs(cpgs.missing.GA, "Bohlin" )
+```
+
+```{r}
+MethylationData <- get_MethylationDataExample()
+MethylationData
+```
+
+```{r}
+age.example55 <- DNAmAge(MethylationData)
+```
+
+```{r}
+age.example55
+```
+
+```{r}
+missCpGs <- checkClocks(MethylationData)
+```
+
+```{r}
+age.example55.sel <- DNAmAge(MethylationData, clocks=c("Horvath", "BNN"))
+age.example55.sel
+```
+
+```{r}
+library(readr)
+path <- system.file("extdata", package = "methylclock")
+covariates <- read_csv(file.path(path, "SampleAnnotationExample55.csv"))
+covariates
+```
+
+```{r}
+age <- covariates$Age
+head(age)
+```
+
+```{r}
+age.example55 <- DNAmAge(MethylationData, age=age, cell.count=TRUE)
+```
+
+```{r}
+age.example55
+```
+
+```{r}
+autism <- covariates$diseaseStatus
+kruskal.test(age.example55$ageAcc.Horvath ~ autism)
+```
+
+```{r}
+kruskal.test(age.example55$ageAcc2.Horvath ~ autism)
+```
+
+```{r}
+kruskal.test(age.example55$ageAcc3.Horvath ~ autism)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
