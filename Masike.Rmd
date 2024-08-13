@@ -1,0 +1,131 @@
+---
+title: "HPCSA"
+author: "Vee"
+date: "2024-08-01"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(mcr)
+library(tidyverse)
+library(corrplot)
+library(RColorBrewer)
+library(mice)
+library(tidyverse)
+library(gtsummary)
+library(rstatix)
+library(ggpubr)
+library(readxl)
+```
+
+```{r}
+library(readxl)
+DOH <- read_excel("C:/Users/VUSI/Downloads/DOH.xlsx", 
+    range = "a1:bl201")
+View(DOH)
+```
+
+```{r}
+
+DOH1 <- subset(DOH, select = c("Gender","Age_Group","Race",
+"Position", "Education_Level", "District"), drop = FALSE)
+DOH1
+```
+
+```{r}
+library(nnet)
+```
+
+```{r}
+DOH1 %>% 
+  tbl_summary(by= Position) %>%  add_n() %>% add_p(test = all_categorical() ~ "chisq.test",
+        pvalue_fun = ~style_pvalue(., digits = 2)) %>% bold_p(t=0.1) %>%
+  add_stat_label() %>%
+  bold_labels() %>%
+  modify_header(list(label ~ "**Variable**", all_stat_cols() ~ "**{level}**")) %>%
+  modify_spanning_header(all_stat_cols() ~ "**Salary position levels**") %>%
+  as_gt() %>%
+  gt::tab_header(
+    title = gt::md("**Table 1. Demographic characteristics**")
+  ) %>%
+  gt::tab_source_note("Data updated August, 2024 by Vusi")
+```
+
+```{r}
+library(MASS)
+library(kableExtra)
+```
+
+
+```{r}
+DOH1$Position <- as.factor(DOH1$Position)
+```
+
+```{r}
+DOH1
+```
+
+```{r}
+DOH1$Position <- relevel(DOH1$Position, ref = "8 - 10")
+```
+
+```{r}
+#view_df(DOH1, show.frq = T, show.wtd.prc = T, show.na = T)
+```
+
+
+
+```{r}
+fitl_1 <- multinom(Position ~ Age_Group + Race + Gender + Education_Level+ District, data=DOH1)
+
+summary(fitl_1)
+```
+
+```{r}
+#library(sjPlot)
+#tab_model(fitl_1, show.reflvl = T )
+```
+
+```{r}
+#save_table(filename = "Management quality.png")
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+```{r}
+# Option 2 for display
+#options(scipen = 999, digits = 5)
+
+
+
+#vee1 <- tidy(fitl_1, conf.int = TRUE, conf.level = 0.95, exponentiate = TRUE)
+#vee1
+```
+
+
+
+```{r}
+tbl_regression(fitl_1, exp = TRUE) %>% bold_p(t=0.1) %>% add_n() %>%
+  bold_labels() %>%
+  modify_header(list(label ~ "**Variable**", all_stat_cols() ~ "**{level}**")) %>%
+  as_gt() %>%
+  gt::tab_header(
+    title = gt::md("**Table 2. Effects of demographic characteristics on salary**")
+  ) %>%
+  gt::tab_source_note("Data updated August, 2024 by Vusi")
+```
+
+
